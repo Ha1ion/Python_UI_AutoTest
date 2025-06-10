@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>簡易利率計算機</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        .calculator { border: 1px solid #ccc; padding: 20px; border-radius: 8px; max-width: 400px; }
+        .form-group { margin-bottom: 10px; }
+        label { display: block; margin-bottom: 5px; }
+        input[type="text"] { width: 95%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        input[type="submit"] { padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        #result-display { margin-top: 20px; font-size: 1.2em; }
+        /* 這個 table 結構是為了匹配先前 XPath 定位器 */
+        table { border-collapse: collapse; margin-top: 15px; }
+        td { padding: 8px; border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        <h3>簡易利率計算機</h3>
+        
+        <form name="interestForm" onsubmit="return calculateInterest();">
+            <div class="form-group">
+                <label for="principal">本金 (Principal):</label>
+                <input type="text" name="principal" id="principal" value="">
+            </div>
+
+            <div class="form-group">
+                <label for="interest">年利率 (%) (Annual Interest Rate):</label>
+                <input type="text" name="interest" id="interest" value="">
+            </div>
+
+            <div class="form-group">
+                <label for="period">期間 (年) (Period in Years):</label>
+                <input type="text" name="period" id="period" value="">
+            </div>
+            
+            <input type="submit" value="計算">
+        </form>
+
+        <div id="result-display">
+            </div>
+    </div>
+
+    <script>
+        function calculateInterest() {
+            // 1. 取得輸入值
+            const principal = parseFloat(document.forms["interestForm"]["principal"].value);
+            const rate = parseFloat(document.forms["interestForm"]["interest"].value);
+            const period = parseFloat(document.forms["interestForm"]["period"].value);
+
+            // 2. 簡單驗證
+            if (isNaN(principal) || isNaN(rate) || isNaN(period)) {
+                alert("請輸入有效的數字");
+                return false; // 防止表單提交
+            }
+
+            // 3. 計算單利
+            const totalInterest = (principal * rate * period) / 100;
+
+            // 4. 格式化結果並顯示
+            const formattedInterest = totalInterest.toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }); // 格式化為 "$1,000.00"
+
+            const resultContainer = document.getElementById("result-display");
+            
+            // 5. 建立與測試腳本期望的 XPath 相符的結構
+            // XPath: /html/body/font/table[2]/tbody/tr[1]/td[2]/font/b
+            // 我們簡化結構，但確保 Selenium 仍能找到
+            // 由於 body 直下沒有 font, table[2] 等，我們直接建立一個可被找到的結構
+            // 注意：原本的 XPath 太過絕對，很容易因網頁微小變動而失效。
+            // 我們這裡建立一個較簡單的結構，並在稍後調整 Python 中的定位器。
+            resultContainer.innerHTML = `
+                <hr>
+                <h4>計算結果</h4>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>總利息:</td>
+                            <td id="total-interest-result"><b>${formattedInterest}</b></td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+
+            return false; // 防止表單實際提交和頁面刷新
+        }
+    </script>
+
+</body>
+</html>
