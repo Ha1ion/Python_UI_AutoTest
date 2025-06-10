@@ -70,5 +70,6 @@ python3 ai_generate.py
 
 ```bash
 behave
-Behave 會自動尋找 feature 與 steps 檔案，並根據 environment.py 設定啟動瀏覽器，完成測試流程。
 ```
+
+Behave 會自動尋找 feature 與 steps 檔案，並根據 environment.py 設定啟動瀏覽器，完成測試流程。
